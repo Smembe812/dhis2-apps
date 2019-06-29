@@ -1,27 +1,10 @@
 import React, {Component} from 'react'
 
 import { OrgUnitTree } from '@dhis2/d2-ui-org-unit-tree'
-import Drawer from '@material-ui/core/Drawer'
-import { withStyles } from '@material-ui/core/styles';
+import SideBar from '../ui/drawer'
 import { mergeChildren, incrementMemberCount, decrementMemberCount } from '@dhis2/d2-ui-org-unit-tree';
 
-const drawerWidth = '20em';
 
-const styles = theme => ({
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: drawerWidth,
-      paddingTop: '3em'
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing.unit * 3,
-    },
-    toolbar: theme.mixins.toolbar,
-  });
 
 class OrgUnitSelect extends Component {
     constructor(props){
@@ -107,14 +90,8 @@ class OrgUnitSelect extends Component {
         const {classes} = this.props;
         return (
             <>
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    
+                <SideBar>
+
                     <OrgUnitTree
                         root={this.state.rootWithMembers}
                         selected={this.state.selected}
@@ -126,10 +103,11 @@ class OrgUnitSelect extends Component {
                         memberObject="TuL8IOPzpHh"
                         onChildrenLoaded={this.handleChildrenLoaded}
                     />
-                </Drawer>
+                </SideBar>
+                    
             </>
         )
     }
 }
 
-export default withStyles(styles)(OrgUnitSelect)
+export default OrgUnitSelect
