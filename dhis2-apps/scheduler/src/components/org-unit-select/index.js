@@ -87,23 +87,19 @@ class OrgUnitSelect extends Component {
             return null;
         }
 
-        const {classes} = this.props;
         return (
             <>
-                <SideBar>
-
-                    <OrgUnitTree
-                        root={this.state.rootWithMembers}
-                        selected={this.state.selected}
-                        currentRoot={this.state.currentRoot}
-                        initiallyExpanded={[`/${this.state.rootWithMembers.id}`]}
-                        onSelectClick={this.handleOrgUnitClick}
-                        onChangeCurrentRoot={changeRoot}
-                        memberCollection="dataSets"
-                        memberObject="TuL8IOPzpHh"
-                        onChildrenLoaded={this.handleChildrenLoaded}
-                    />
-                </SideBar>
+                <OrgUnitTree
+                    root={this.state.rootWithMembers}
+                    selected={this.state.selected}
+                    currentRoot={this.state.currentRoot}
+                    initiallyExpanded={[`/${this.state.rootWithMembers.id}`]}
+                    onSelectClick={this.handleOrgUnitClick}
+                    onChangeCurrentRoot={changeRoot}
+                    memberCollection="dataSets"
+                    memberObject="TuL8IOPzpHh"
+                    onChildrenLoaded={this.handleChildrenLoaded}
+                />
                     
             </>
         )
