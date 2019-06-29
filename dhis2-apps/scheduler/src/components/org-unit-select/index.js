@@ -76,8 +76,6 @@ class OrgUnitSelect extends Component {
     }
 
     render(){
-        console.log(this.state)
-
         const changeRoot = (currentRoot) => {
             this.setState({ currentRoot });
         };

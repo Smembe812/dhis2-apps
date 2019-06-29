@@ -8,6 +8,7 @@ import Sidebar from './components/ui/drawer';
 import './App.css';
 import OrgUnitSelect from './components/org-unit-select';
 import PaperSheet from './components/ui/paper'
+import ProgramIndicators from './components/program-indicators';
 
 class App extends Component{
   constructor(props) {
@@ -16,6 +17,8 @@ class App extends Component{
       this.state = {
           d2: props.d2,
       };
+
+      
   }
 
   getChildContext() {
@@ -24,22 +27,23 @@ class App extends Component{
 
   render(){
     if (!this.state.d2) {
-        console.log('no');
+        console.warn('d2 not loaded');
         return null;
     }
-
+   
+    
     return (
       <D2UIApp>
         <MuiThemeProvider theme={createMuiTheme(dhis2theme)}>
           <HeaderBar d2={this.props.d2}/>
             <Sidebar>
-              
               <PaperSheet heading="Select Org Unit">
                 <OrgUnitSelect d2={this.props.d2}/>
               </PaperSheet>
               <PaperSheet heading="Select Period">
               </PaperSheet>
               <PaperSheet heading="Select Indicators">
+                <ProgramIndicators d2={this.props.d2}></ProgramIndicators>
               </PaperSheet>
             </Sidebar>
         </MuiThemeProvider>
