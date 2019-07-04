@@ -26,14 +26,18 @@ class ProgramIndicators extends Component {
             dataElements = dataElements.toArray()
             this.setState({programs, programIndicators, dataElements})
         })
-        
+
         this.selectIndicator = this.selectIndicator.bind(this)
         this.handleSelectProgram = this.handleSelectProgram.bind(this)
         
     }
 
     selectIndicator(e){
-        this.props.onSelectIndicator(e)
+        this.props.onIndicatorSelection(e)
+    }
+
+    selectDataElement(e){
+        this.props.onSelectDataElement(e)
     }
 
     getChildContext() {
@@ -56,10 +60,17 @@ class ProgramIndicators extends Component {
             
     }
 
+    mapDataElements(dataElements){
+        return dataElements.map(({displayName, id}) => {
+            return {name: displayName, id}
+        })
+    }
+
     async handleSelectProgram(program){
         const programIndicators = await this.getProgramIndicators(program)
         this.setState({program, programIndicators})
     }
+    
 
     getProgramIndicators(program){
         return new Promise((resolve, reject) => {
@@ -70,6 +81,7 @@ class ProgramIndicators extends Component {
                 filter: `program.id:eq:${program.id}`
             })
             .then(indicators => resolve(indicators.toArray()))
+            .catch(err => reject(err))
         })
     }
 
@@ -91,7 +103,7 @@ class ProgramIndicators extends Component {
                 <div>
                 <ListSelectWithLocalSearch
                     source={this.mapIndicators(programIndicators)}
-                    onItemDoubleClick={(item) => console.log(item)}
+                    onItemDoubleClick={this.selectIndicator}
                 />
             </div>
             </>

@@ -13,8 +13,9 @@ import "storm-react-diagrams/dist/style.min.css"
 import './App.css'
 import OrgUnitSelect from './components/org-unit-select';
 import PaperSheet from './components/ui/paper'
-import ProgramIndicators from './components/program-indicators'
+import DataElements from './components/data-elements'
 import FormBuilder from './components/form-builder'
+import DataContainer from './components/data-container'
 
 import {
 	DiagramEngine,
@@ -48,7 +49,7 @@ class App extends Component{
 
       this.state.engine.installDefaultFactories();
 
-      this.handleSelectedIndicator = this.handleSelectedIndicator.bind(this)
+      this.handleSelectDataElement = this.handleSelectDataElement.bind(this)
   }
 
   getChildContext() {
@@ -64,19 +65,23 @@ class App extends Component{
       }
   }
 
-  handleSelectedIndicator(indicator){
-    const {id, value} = indicator.target
-    this.setState({selectedIndicator: {id, value}})
+  handleIndicatorSelection(indicator){
+    console.log(indicator)
+  }
+
+  handleSelectDataElement(indicator){
+    const name = indicator
+    this.setState({selectedIndicator: {name}})
     console.log(this.state)
 
     const node = this.createNode({
-          name: id,
+          name,
           color: 'rgb(0, 192, 255)',
           x: 100,
           y: 100
       },
       {
-          id
+          name
       })
 
       const port1 = this.createPort(node, 'out');
@@ -148,7 +153,7 @@ class App extends Component{
               <PaperSheet heading="Select Period">
               </PaperSheet>
               <PaperSheet heading="Select Indicators">
-                <ProgramIndicators d2={this.props.d2} onSelectIndicator={this.handleSelectedIndicator}></ProgramIndicators>
+                <DataElements d2={this.props.d2} onSelectDataElement={this.handleSelectDataElement}></DataElements>
               </PaperSheet>
             </Sidebar>
             <main className={classes.content}>
@@ -159,7 +164,7 @@ class App extends Component{
                  
                 </CardContent>
               </Card>
-              <FormBuilder/>
+              <DataContainer d2={this.props.d2} onIndicatorSelection={this.handleIndicatorSelection}/>
               
               </div>
             </main>
