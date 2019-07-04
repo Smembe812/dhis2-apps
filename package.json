@@ -24,8 +24,7 @@
   "scripts": {
     "postinstall": "packages link",
     "build": "cross-env BABEL_ENV=commonjs packages build",
-    "watch": "packages exec yarn watch",
-    "lint": "packages exec yarn lint",
+    "lint": "yarn lint",
     "test": "jest"
   },
   "workspaces": [

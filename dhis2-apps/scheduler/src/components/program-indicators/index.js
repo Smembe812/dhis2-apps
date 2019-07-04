@@ -1,42 +1,100 @@
 import React, {Component} from 'react'
+import {SelectField, ListSelectWithLocalSearch} from '@dhis2/d2-ui-core';
 
 class ProgramIndicators extends Component {
     constructor (props){
         super(props)
         this.state = {
-            d2: props.d2
+            d2: props.d2,
+            selectedProgram: 'dsdsd'
         }
-        
-        this.props.d2.models.programIndicators.list({
-            paging: false,
-        fields: 'id,displayName'
+        Promise.all([
+            props.d2.models.programIndicators.list({
+                paging: false,
+                fields: 'id,displayName'
+            }),
+            props.d2.models.program.list({
+                fields: 'id,displayName'
+            }),
+            props.d2.models.dataElements.list({
+                fields: 'id,displayName'
+            })
+        ])
+        .then(([programIndicators, programs, dataElements]) => {
+            programs = programs.toArray()
+            programIndicators = programIndicators.toArray()
+            dataElements = dataElements.toArray()
+            this.setState({programs, programIndicators, dataElements})
         })
-        .then((programIndicators)=> (
-            this.setState(
-                {programIndicators: programIndicators.toArray()}
-                )
-            )
-        )
+        
+        this.selectIndicator = this.selectIndicator.bind(this)
+        this.handleSelectProgram = this.handleSelectProgram.bind(this)
+        
     }
+
+    selectIndicator(e){
+        this.props.onSelectIndicator(e)
+    }
+
     getChildContext() {
         return {
             d2: this.props.d2,
         };
     }
 
-    render(){
-        console.log(this.state)
+    mapIndicators(programIndicators){
+        return programIndicators.map(({displayName, id}) => {
+            return {name: displayName, id: id, label: displayName}
+        })
+            
+    }
 
-        const {programIndicators} = this.state
+    mapPrograms(programs){
+        return programs.map(({displayName, id}) => {
+            return {name: displayName, id: id}
+        })
+            
+    }
+
+    async handleSelectProgram(program){
+        const programIndicators = await this.getProgramIndicators(program)
+        this.setState({program, programIndicators})
+    }
+
+    getProgramIndicators(program){
+        return new Promise((resolve, reject) => {
+            
+            this.state.d2.models.programIndicators.list({
+                paging: false,
+                fields: 'id,displayName',
+                filter: `program.id:eq:${program.id}`
+            })
+            .then(indicators => resolve(indicators.toArray()))
+        })
+    }
+
+    render(){
+
+        const {programIndicators, programs, selectedProgram} = this.state
         if (!programIndicators){
             return null
         }
+        this.mapIndicators(programIndicators)
         return (
-            <ul>
-                {programIndicators.map(({displayName, key}) => (
-                    <li key={key}>{displayName}</li>
-                ))}
-            </ul>
+            <>
+                <SelectField
+                    label="Select Indicator"
+                    value="dasdsd"
+                    items={this.mapPrograms(programs)}
+                    onChange={this.handleSelectProgram}
+                />
+                <div>
+                <ListSelectWithLocalSearch
+                    source={this.mapIndicators(programIndicators)}
+                    onItemDoubleClick={(item) => console.log(item)}
+                />
+            </div>
+            </>
         )
     }
 }

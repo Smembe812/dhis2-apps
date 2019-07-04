@@ -21,12 +21,13 @@
     "@dhis2/d2-ui-translation-dialog": "v0.0.0-PLACEHOLDER",
     "@material-ui/core": "3.3.2",
     "@material-ui/icons": "3",
+    "d2": "^31.7",
     "moment": "^2.22.1",
     "prop-types": "^15.6.1",
-    "d2": "^31.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "storm-react-diagrams": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
