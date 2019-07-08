@@ -20,6 +20,7 @@ import {
 	DefaultNodeModel,
 	DiagramWidget
 } from "storm-react-diagrams";
+import { link } from 'fs';
 
 const styles = theme => ({
   content: {
@@ -38,6 +39,8 @@ class App extends Component{
       this.state = {
           d2: props.d2,
           programIndicator: {},
+          dataElement: {},
+          orgUnits: [],
           engine: new DiagramEngine(),
           model: new DiagramModel(),
           nodesAndEdges: []
@@ -47,6 +50,9 @@ class App extends Component{
 
       this.handleDataElementSelection = this.handleDataElementSelection.bind(this)
       this.handleIndicatorSelection = this.handleIndicatorSelection.bind(this)
+      this.handleOrgUnitSelect = this.handleOrgUnitSelect.bind(this)
+      this.fireAnalytics = this.fireAnalytics.bind(this)
+      this.getIndicatorDELink = this.getIndicatorDELink.bind(this)
   }
 
   getChildContext() {
@@ -63,7 +69,7 @@ class App extends Component{
   }
 
   handleIndicatorSelection(indicator){
-    const {displayName} = indicator
+    const {displayName, id} = indicator
     this.setState({programIndicator: indicator})
 
     const node = this.createNode({
@@ -73,7 +79,8 @@ class App extends Component{
         y: 100
     },
     {
-        name: displayName
+        name: displayName,
+        id
     })
 
     this.createPort(node, 'out');
@@ -84,7 +91,7 @@ class App extends Component{
   }
 
   handleDataElementSelection(dataElement){
-    const {displayName} = dataElement
+    const {displayName, id} = dataElement
     this.setState({onSelectDataElement: {displayName}})
 
     const node = this.createNode({
@@ -94,7 +101,8 @@ class App extends Component{
           y: 100
       },
       {
-          name: displayName
+        name: displayName,
+        id
       })
 
       this.createPort(node, 'in');
@@ -103,6 +111,11 @@ class App extends Component{
       this.addNodeToModel(this.state.model, node)
       this.loadEngine()
       
+  }
+
+  handleOrgUnitSelect(orgUnit){
+    this.setState({orgUnits: [...this.state.orgUnits, orgUnit.id]}, () => this.fireAnalytics())
+    
   }
 
   createNode(options, extras = null){
@@ -139,6 +152,41 @@ class App extends Component{
   this.createPort(node2, 'in');
   this.state.model.addAll(node2);
   }
+
+  fireAnalytics(){
+    return this.getIndicatorDELink()
+    const req = new this.state.d2.analytics.request()
+    .addDataDimension([this.state.programIndicator.id])
+    .addPeriodDimension('THIS_MONTH')
+    .addOrgUnitDimension(this.state.orgUnits);
+
+    this.state.d2.analytics.aggregate.fetch(req).then(data => console.log(data))
+  }
+
+  getIndicatorDELink(){
+    const links = []
+    Object.entries(this.state.model.links).forEach((link) => {
+      const {sourcePort, targetPort} = link[1]
+      const map = {}
+      if (sourcePort !== undefined) { 
+        const indicator = {
+          programIndicator: sourcePort.parent.extras
+        }
+        Object.assign(map, indicator)
+      }
+
+      if (targetPort !== undefined){
+        const dataElement = {
+          dataElement: targetPort.parent.extras
+        }
+        Object.assign(map, dataElement)
+      }
+
+      links.push(map)
+    })
+    console.log(links)
+  }
+
   render(){
     const {classes} = this.props
   
@@ -153,7 +201,9 @@ class App extends Component{
         <MuiThemeProvider theme={createMuiTheme(dhis2theme)}>
           <HeaderBar d2={this.props.d2}/>
             <Sidebar>
-                <OrgUnitSelect d2={this.props.d2}/>
+                <OrgUnitSelect 
+                  d2={this.props.d2}
+                  onSelectOrgUnit={this.handleOrgUnitSelect}/>
             </Sidebar>
             <main className={classes.content}>
               <div className={classes.toolbar}>

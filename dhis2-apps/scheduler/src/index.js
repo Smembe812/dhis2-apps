@@ -9,10 +9,10 @@ let baseUrl = process.env.REACT_APP_DHIS2_BASE_URL;
 
 if (!baseUrl) {
     console.warn('Set the environment variable `REACT_APP_DHIS2_BASE_URL` to your DHIS2 instance to override localhost:8080!');
-    baseUrl = 'https://play.dhis2.org/2.32.0/';
+    baseUrl = 'https://play.dhis2.org/2.32.1/';
 }
 
-init({baseUrl: baseUrl + '/api/29'})
+init({baseUrl: baseUrl + '/api/'})
     .then(d2 => {
         console.log(d2.models)
         ReactDOM.render(<App d2={d2}/>, document.getElementById('root'));

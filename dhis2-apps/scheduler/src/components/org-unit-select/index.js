@@ -58,6 +58,7 @@ class OrgUnitSelect extends Component {
     }
 
     handleOrgUnitClick(event, orgUnit) {
+        this.props.onSelectOrgUnit(orgUnit)
         if (this.state.selected.includes(orgUnit.path)) {
             this.state.selected.splice(this.state.selected.indexOf(orgUnit.path), 1);
             decrementMemberCount(this.state.rootWithMembers, orgUnit);
@@ -65,6 +66,7 @@ class OrgUnitSelect extends Component {
         } else {
             incrementMemberCount(this.state.rootWithMembers, orgUnit);
             this.setState({ selected: this.state.selected.concat(orgUnit.path) });
+            
         }
     }
 
