@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 
 import { OrgUnitTree } from '@dhis2/d2-ui-org-unit-tree'
-import SideBar from '../ui/drawer'
 import { mergeChildren, incrementMemberCount, decrementMemberCount } from '@dhis2/d2-ui-org-unit-tree';
 
 

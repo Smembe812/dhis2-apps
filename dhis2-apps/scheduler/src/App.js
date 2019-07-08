@@ -12,18 +12,13 @@ import Sidebar from './components/ui/drawer';
 import "storm-react-diagrams/dist/style.min.css" 
 import './App.css'
 import OrgUnitSelect from './components/org-unit-select';
-import PaperSheet from './components/ui/paper'
-import DataElements from './components/data-elements'
-import FormBuilder from './components/form-builder'
 import DataContainer from './components/data-container'
 
 import {
 	DiagramEngine,
 	DiagramModel,
 	DefaultNodeModel,
-	LinkModel,
-	DiagramWidget,
-	DefaultLinkModel
+	DiagramWidget
 } from "storm-react-diagrams";
 
 const styles = theme => ({
@@ -42,6 +37,7 @@ class App extends Component{
 
       this.state = {
           d2: props.d2,
+          programIndicator: {},
           engine: new DiagramEngine(),
           model: new DiagramModel(),
           nodesAndEdges: []
@@ -67,45 +63,45 @@ class App extends Component{
   }
 
   handleIndicatorSelection(indicator){
-    const name = indicator
-    this.setState({selectedIndicator: {name}})
+    const {displayName} = indicator
+    this.setState({programIndicator: indicator})
 
     const node = this.createNode({
-        name: indicator,
+        name: displayName,
         color: 'rgb(0, 192, 255)',
         x: 100,
         y: 100
     },
     {
-        name: indicator
+        name: displayName
     })
 
-    const port1 = this.createPort(node, 'out');
+    this.createPort(node, 'out');
 
     this.state.nodesAndEdges.push(node)
-    const model = this.addNodeToModel(this.state.model, node)
-    const engine = this.loadEngine()
+    this.addNodeToModel(this.state.model, node)
+    this.loadEngine()
   }
 
-  handleDataElementSelection(indicator){
-    const name = indicator
-    this.setState({onSelectDataElement: {name}})
+  handleDataElementSelection(dataElement){
+    const {displayName} = dataElement
+    this.setState({onSelectDataElement: {displayName}})
 
     const node = this.createNode({
-          name,
+          name: displayName,
           color: 'rgb(192, 255, 0)',
           x: 400,
           y: 100
       },
       {
-          name
+          name: displayName
       })
 
-      const port1 = this.createPort(node, 'in');
+      this.createPort(node, 'in');
 
       this.state.nodesAndEdges.push(node)
-      const model = this.addNodeToModel(this.state.model, node)
-      const engine = this.loadEngine()
+      this.addNodeToModel(this.state.model, node)
+      this.loadEngine()
       
   }
 
@@ -140,17 +136,11 @@ class App extends Component{
       y: 100
     })
 
-  const port2 = this.createPort(node2, 'in');
+  this.createPort(node2, 'in');
   this.state.model.addAll(node2);
   }
   render(){
     const {classes} = this.props
-
-
-    //5) load model into engine
-    
-
-    //this.state.engine.setDiagramModel(this.state.model);
   
     if (!this.state.d2) {
         console.warn('d2 not loaded');

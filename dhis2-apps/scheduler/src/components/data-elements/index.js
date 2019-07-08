@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import {SelectField, ListSelectWithLocalSearch} from '@dhis2/d2-ui-core';
+import {ListSelectWithLocalSearch} from '@dhis2/d2-ui-core';
 
 class DataElements extends Component {
     constructor (props){
         super(props)
         this.state = {
             d2: props.d2,
-            selectedProgram: 'dsdsd'
+            dataElements: []
         }
         
         props.d2.models.dataElement.list({
@@ -22,8 +22,10 @@ class DataElements extends Component {
     }
 
     selectDataElement(e){
-        console.log(e)
-        this.props.onDataElementSelection(e)
+        this.props.onDataElementSelection(
+            this.state.dataElements.filter(
+                ({displayName}) => displayName === e)[0]
+            )
     }
 
     getChildContext() {

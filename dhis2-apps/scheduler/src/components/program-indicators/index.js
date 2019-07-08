@@ -33,11 +33,10 @@ class ProgramIndicators extends Component {
     }
 
     selectIndicator(e){
-        this.props.onIndicatorSelection(e)
-    }
-
-    selectDataElement(e){
-        this.props.onSelectDataElement(e)
+        this.props.onIndicatorSelection(
+            this.state.programIndicators.filter(
+                ({displayName}) => displayName === e)[0]
+            )
     }
 
     getChildContext() {
@@ -87,7 +86,7 @@ class ProgramIndicators extends Component {
 
     render(){
 
-        const {programIndicators, programs, selectedProgram} = this.state
+        const {programIndicators, programs, programIndicator} = this.state
         if (!programIndicators){
             return null
         }
