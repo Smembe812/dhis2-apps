@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import ProgramIndicators from '../program-indicators'
+import DataElements from '../data-elements'
 
 function TabContainer(props) {
   return (
@@ -22,8 +23,7 @@ TabContainer.propTypes = {
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-    width: '25%'
+    backgroundColor: theme.palette.background.paper
   },
 })
 
@@ -39,6 +39,10 @@ function SimpleTabs(props) {
     props.onIndicatorSelection(e)
   }
 
+  function onDataElementSelection(e){
+    props.onDataElementSelection(e)
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -48,7 +52,7 @@ function SimpleTabs(props) {
         </Tabs>
       </AppBar>
       {value === 0 && <TabContainer><ProgramIndicators d2={d2} onIndicatorSelection={onIndicatorSelection}/></TabContainer>}
-      {value === 1 && <TabContainer>Item Two</TabContainer>}
+      {value === 1 && <TabContainer><DataElements d2={d2} onDataElementSelection={onDataElementSelection}></DataElements></TabContainer>}
     </div>
   );
 }

@@ -23,7 +23,7 @@ class DataElements extends Component {
 
     selectDataElement(e){
         console.log(e)
-        this.props.onSelectDataElement(e)
+        this.props.onDataElementSelection(e)
     }
 
     getChildContext() {

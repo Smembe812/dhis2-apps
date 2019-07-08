@@ -49,7 +49,8 @@ class App extends Component{
 
       this.state.engine.installDefaultFactories();
 
-      this.handleSelectDataElement = this.handleSelectDataElement.bind(this)
+      this.handleDataElementSelection = this.handleDataElementSelection.bind(this)
+      this.handleIndicatorSelection = this.handleIndicatorSelection.bind(this)
   }
 
   getChildContext() {
@@ -66,29 +67,44 @@ class App extends Component{
   }
 
   handleIndicatorSelection(indicator){
-    console.log(indicator)
-  }
-
-  handleSelectDataElement(indicator){
     const name = indicator
     this.setState({selectedIndicator: {name}})
-    console.log(this.state)
+
+    const node = this.createNode({
+        name: indicator,
+        color: 'rgb(0, 192, 255)',
+        x: 100,
+        y: 100
+    },
+    {
+        name: indicator
+    })
+
+    const port1 = this.createPort(node, 'out');
+
+    this.state.nodesAndEdges.push(node)
+    const model = this.addNodeToModel(this.state.model, node)
+    const engine = this.loadEngine()
+  }
+
+  handleDataElementSelection(indicator){
+    const name = indicator
+    this.setState({onSelectDataElement: {name}})
 
     const node = this.createNode({
           name,
-          color: 'rgb(0, 192, 255)',
-          x: 100,
+          color: 'rgb(192, 255, 0)',
+          x: 400,
           y: 100
       },
       {
           name
       })
 
-      const port1 = this.createPort(node, 'out');
+      const port1 = this.createPort(node, 'in');
 
       this.state.nodesAndEdges.push(node)
       const model = this.addNodeToModel(this.state.model, node)
-      this.createSecondNode()
       const engine = this.loadEngine()
       
   }
@@ -147,14 +163,7 @@ class App extends Component{
         <MuiThemeProvider theme={createMuiTheme(dhis2theme)}>
           <HeaderBar d2={this.props.d2}/>
             <Sidebar>
-              <PaperSheet heading="Select Org Unit">
                 <OrgUnitSelect d2={this.props.d2}/>
-              </PaperSheet>
-              <PaperSheet heading="Select Period">
-              </PaperSheet>
-              <PaperSheet heading="Select Indicators">
-                <DataElements d2={this.props.d2} onSelectDataElement={this.handleSelectDataElement}></DataElements>
-              </PaperSheet>
             </Sidebar>
             <main className={classes.content}>
               <div className={classes.toolbar}>
@@ -164,7 +173,10 @@ class App extends Component{
                  
                 </CardContent>
               </Card>
-              <DataContainer d2={this.props.d2} onIndicatorSelection={this.handleIndicatorSelection}/>
+              <DataContainer 
+                d2={this.props.d2} 
+                onIndicatorSelection={this.handleIndicatorSelection} 
+                onDataElementSelection={this.handleDataElementSelection}/>
               
               </div>
             </main>
