@@ -80,7 +80,8 @@ class App extends Component{
     },
     {
         name: displayName,
-        id
+        id,
+        dx: 'programIndicator'
     })
 
     this.createPort(node, 'out');
@@ -102,10 +103,12 @@ class App extends Component{
       },
       {
         name: displayName,
-        id
+        id,
+        dx: 'dataElement'
       })
 
-      this.createPort(node, 'in');
+      this.createPort(node, 'in')
+      this.createPort(node, 'out')
 
       this.state.nodesAndEdges.push(node)
       this.addNodeToModel(this.state.model, node)
@@ -165,21 +168,29 @@ class App extends Component{
 
   getIndicatorDELink(){
     const links = []
-    Object.entries(this.state.model.links).forEach((link) => {
-      const {sourcePort, targetPort} = link[1]
+    Object.entries(this.state.model.links).forEach((link, key) => {
+      
+      const { sourcePort, targetPort } = link[1]
       const map = {}
       if (sourcePort !== undefined) { 
-        const indicator = {
-          programIndicator: sourcePort.parent.extras
+        if (sourcePort.parent.extras.dx === 'programIndicator'){
+          const source = {
+            source: sourcePort.parent.extras
+          }
+          Object.assign(map, source, {relationship: 'pi - de'})
         }
-        Object.assign(map, indicator)
+        else if (sourcePort.parent.extras.dx === 'dataElement'){
+          const dataElement = {} 
+          dataElement[`source`] = sourcePort.parent.extras
+          Object.assign(map, dataElement, {relationship: 'category combo'})
+        }
       }
 
       if (targetPort !== undefined){
-        const dataElement = {
-          dataElement: targetPort.parent.extras
-        }
-        Object.assign(map, dataElement)
+        console.log(targetPort)
+        const target = {} 
+        target[`target`] = targetPort.parent.extras
+        Object.assign(map, target)
       }
 
       links.push(map)
